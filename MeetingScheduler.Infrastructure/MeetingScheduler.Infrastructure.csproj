@@ -6,4 +6,9 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\MeetingScheduler.Application\MeetingScheduler.Application.csproj" />
+    <ProjectReference Include="..\MeetingScheduler.Domain\MeetingScheduler.Domain.csproj" />
+  </ItemGroup>
+
 </Project>
