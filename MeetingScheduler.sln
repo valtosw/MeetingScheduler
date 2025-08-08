@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingScheduler.Infrastruc
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingScheduler.Application", "MeetingScheduler.Application\MeetingScheduler.Application.csproj", "{299EB6D9-B4C3-4C35-BCB6-F1E7E1E4F6FA}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingScheduler.Tests", "MeetingScheduler.Tests\MeetingScheduler.Tests.csproj", "{0A56C502-A623-4777-9E8B-3492A640BEDA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{299EB6D9-B4C3-4C35-BCB6-F1E7E1E4F6FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{299EB6D9-B4C3-4C35-BCB6-F1E7E1E4F6FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{299EB6D9-B4C3-4C35-BCB6-F1E7E1E4F6FA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A56C502-A623-4777-9E8B-3492A640BEDA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A56C502-A623-4777-9E8B-3492A640BEDA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A56C502-A623-4777-9E8B-3492A640BEDA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A56C502-A623-4777-9E8B-3492A640BEDA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
