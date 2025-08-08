@@ -11,12 +11,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\MeetingScheduler.Application\MeetingScheduler.Application.csproj" />
     <ProjectReference Include="..\MeetingScheduler.Domain\MeetingScheduler.Domain.csproj" />
+    <ProjectReference Include="..\MeetingScheduler.Infrastructure\MeetingScheduler.Infrastructure.csproj" />
   </ItemGroup>
 
 </Project>

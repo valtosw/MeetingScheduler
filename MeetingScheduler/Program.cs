@@ -1,3 +1,7 @@
+using MeetingScheduler.Application.Interfaces;
+using MeetingScheduler.Application.Services;
+using MeetingScheduler.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -5,6 +9,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
+
+builder.Services.AddSingleton<IUserRepository, UserRepository>();
+builder.Services.AddSingleton<IMeetingRepository, MeetingRepository>();
+builder.Services.AddSingleton<MeetingSchedulerService>();
+builder.Services.AddSingleton<UserService>();
 
 var app = builder.Build();
 
