@@ -8,32 +8,64 @@ namespace MeetingScheduler.Application.Services
     {
         private int _meetingIdCounter = 1;
 
-        public Meeting? ScheduleMeeting(ScheduleMeetingDto dto)
+        public (DateTime start, DateTime end)? FindEarliestSlot(FindSlotDto dto)
         {
-            var allMeetings = dto.ParticipantIds
-                .SelectMany(userId => meetingRepository.GetByUserId(userId))
-                .Where(m => m.EndTime > dto.EarliestStart && m.StartTime < dto.LatestEnd)
-                .OrderBy(m => m.StartTime)
+            var existingMeetings = meetingRepository.GetAll();
+            
+            var busy = existingMeetings
+                .Where(m => m.EndTime > dto.WindowStart &&
+                            m.StartTime < dto.WindowEnd &&
+                            m.ParticipantIds.Any(id => dto.ParticipantIds.Contains(id)))
+                .Select(m => (
+                    Start: m.StartTime < dto.WindowStart ? dto.WindowStart : m.StartTime,
+                    End: m.EndTime > dto.WindowEnd ? dto.WindowEnd : m.EndTime))
+                .OrderBy(m => m.Start)
                 .ToList();
 
-            DateTime current = dto.EarliestStart;
+            var merged = new List<(DateTime Start, DateTime End)>();
 
-            foreach (var meeting in allMeetings)
+            foreach (var interval in busy)
             {
-                if ((meeting.StartTime - current).TotalMinutes >= dto.DurationMinutes)
+                if (merged.Count == 0 || interval.Start > merged[^1].End)
                 {
-                    return CreateAndSaveMeeting(current, dto);
+                    merged.Add(interval);
+                }
+                else
+                {
+                    merged[^1] = (merged[^1].Start, interval.End > merged[^1].End ? interval.End : merged[^1].End);
+                }
+            }
+
+            DateTime indicator = dto.WindowStart;
+
+            foreach (var (start, end) in merged)
+            {
+                if (start - indicator >= TimeSpan.FromMinutes(dto.Duration))
+                {
+                    return (indicator, indicator.Add(TimeSpan.FromMinutes(dto.Duration)));
                 }
 
-                current = current > meeting.EndTime ? current : meeting.EndTime;
+                indicator = end;
             }
 
-            if ((dto.LatestEnd - current).TotalMinutes >= dto.DurationMinutes)
+            return dto.WindowEnd - indicator >= TimeSpan.FromMinutes(dto.Duration) ? (indicator, indicator.Add(TimeSpan.FromMinutes(dto.Duration))) : null;
+        }
+
+        public List<Meeting> GetMeetingsByUserId(int userId) => [.. meetingRepository.GetByUserId(userId)];
+
+        public Meeting? ScheduleMeeting(ScheduleMeetingDto dto)
+        {
+            var findSlotDto = new FindSlotDto
             {
-                return CreateAndSaveMeeting(current, dto);
-            }
+                ParticipantIds = dto.ParticipantIds,
+                Duration = dto.DurationMinutes,
+                WindowStart = dto.EarliestStart,
+                WindowEnd = dto.LatestEnd
+            };
 
-            return null;
+            var slot = FindEarliestSlot(findSlotDto);
+
+            return slot is null ? null : CreateAndSaveMeeting(slot.Value.start, dto);
         }
 
         private Meeting CreateAndSaveMeeting(DateTime start, ScheduleMeetingDto dto)

@@ -1,7 +1,7 @@
 ﻿using MeetingScheduler.Application.Interfaces;
 using MeetingScheduler.Domain.Models;
 
-namespace MeetingScheduler.Infrastructure
+namespace MeetingScheduler.Infrastructure.Repositories
 {
     public class UserRepository : IUserRepository
     {
