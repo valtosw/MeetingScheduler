@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.36301.6 d17.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingScheduler.WebAPI", "MeetingScheduler\MeetingScheduler.WebAPI.csproj", "{7391DF29-D261-4291-999D-02802DC8F240}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingScheduler.Domain", "MeetingScheduler.Domain\MeetingScheduler.Domain.csproj", "{6736ED6D-03E6-4137-9855-93634AA71217}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingScheduler.Infrastructure", "MeetingScheduler.Infrastructure\MeetingScheduler.Infrastructure.csproj", "{CC2A6CED-0BEA-469F-B0AA-58EC015DF8EA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MeetingScheduler.Application", "MeetingScheduler.Application\MeetingScheduler.Application.csproj", "{299EB6D9-B4C3-4C35-BCB6-F1E7E1E4F6FA}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7391DF29-D261-4291-999D-02802DC8F240}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7391DF29-D261-4291-999D-02802DC8F240}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7391DF29-D261-4291-999D-02802DC8F240}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7391DF29-D261-4291-999D-02802DC8F240}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6736ED6D-03E6-4137-9855-93634AA71217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6736ED6D-03E6-4137-9855-93634AA71217}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6736ED6D-03E6-4137-9855-93634AA71217}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6736ED6D-03E6-4137-9855-93634AA71217}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CC2A6CED-0BEA-469F-B0AA-58EC015DF8EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CC2A6CED-0BEA-469F-B0AA-58EC015DF8EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CC2A6CED-0BEA-469F-B0AA-58EC015DF8EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CC2A6CED-0BEA-469F-B0AA-58EC015DF8EA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{299EB6D9-B4C3-4C35-BCB6-F1E7E1E4F6FA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{299EB6D9-B4C3-4C35-BCB6-F1E7E1E4F6FA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{299EB6D9-B4C3-4C35-BCB6-F1E7E1E4F6FA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{299EB6D9-B4C3-4C35-BCB6-F1E7E1E4F6FA}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {973D6141-AC04-4DE1-BA43-D341E2BE9A50}
+	EndGlobalSection
+EndGlobal
