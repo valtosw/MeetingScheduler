@@ -1,6 +1,6 @@
 ﻿namespace MeetingScheduler.Application.DTOs
 {
-    public class ScheduleMeetingDto
+    public class MeetingSlotDto
     {
         public List<int> ParticipantIds { get; set; } = [];
         public int DurationMinutes { get; set; }

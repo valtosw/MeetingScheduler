@@ -8,14 +8,14 @@ namespace MeetingScheduler.Application.Services
     {
         private int _meetingIdCounter = 1;
 
-        public (DateTime start, DateTime end)? FindEarliestSlot(FindSlotDto dto)
+        public (DateTime start, DateTime end)? FindEarliestSlot(MeetingSlotDto dto)
         {
             TimeSpan open = TimeSpan.FromHours(9);
             TimeSpan close = TimeSpan.FromHours(17);
-            TimeSpan duration = TimeSpan.FromMinutes(dto.Duration);
+            TimeSpan duration = TimeSpan.FromMinutes(dto.DurationMinutes);
 
-            DateTime searchStart = dto.WindowStart;
-            DateTime searchEnd = dto.WindowEnd;
+            DateTime searchStart = dto.EarliestStart;
+            DateTime searchEnd = dto.LatestEnd;
 
             searchStart = AdjustToBusinessStart(searchStart, open, close);
             searchEnd = AdjustToBusinessEnd(searchEnd, open, close);
@@ -78,22 +78,14 @@ namespace MeetingScheduler.Application.Services
 
         public List<Meeting> GetMeetingsByUserId(int userId) => [.. meetingRepository.GetByUserId(userId)];
 
-        public Meeting? ScheduleMeeting(ScheduleMeetingDto dto)
+        public Meeting? ScheduleMeeting(MeetingSlotDto dto)
         {
-            var findSlotDto = new FindSlotDto
-            {
-                ParticipantIds = dto.ParticipantIds,
-                Duration = dto.DurationMinutes,
-                WindowStart = dto.EarliestStart,
-                WindowEnd = dto.LatestEnd
-            };
-
-            var slot = FindEarliestSlot(findSlotDto);
+            var slot = FindEarliestSlot(dto);
 
             return slot is null ? null : CreateAndSaveMeeting(slot.Value.start, dto);
         }
 
-        private Meeting CreateAndSaveMeeting(DateTime start, ScheduleMeetingDto dto)
+        private Meeting CreateAndSaveMeeting(DateTime start, MeetingSlotDto dto)
         {
             var meeting = new Meeting
             {
