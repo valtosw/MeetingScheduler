@@ -16,7 +16,7 @@ namespace MeetingScheduler.WebAPI.Controllers
         {
             var meeting = meetingSchedulerService.ScheduleMeeting(dto);
 
-            return meeting is null ? NotFound("No suitable time slot found for the meeting.") : Ok(meeting);
+            return meeting is null ? NotFound("No suitable time slot found.") : Ok(meeting);
         }
 
         [HttpPost]
