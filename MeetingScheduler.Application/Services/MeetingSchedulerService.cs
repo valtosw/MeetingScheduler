@@ -10,45 +10,70 @@ namespace MeetingScheduler.Application.Services
 
         public (DateTime start, DateTime end)? FindEarliestSlot(FindSlotDto dto)
         {
-            var existingMeetings = meetingRepository.GetAll();
-            
-            var busy = existingMeetings
-                .Where(m => m.EndTime > dto.WindowStart &&
-                            m.StartTime < dto.WindowEnd &&
-                            m.ParticipantIds.Any(id => dto.ParticipantIds.Contains(id)))
-                .Select(m => (
-                    Start: m.StartTime < dto.WindowStart ? dto.WindowStart : m.StartTime,
-                    End: m.EndTime > dto.WindowEnd ? dto.WindowEnd : m.EndTime))
-                .OrderBy(m => m.Start)
-                .ToList();
+            TimeSpan open = TimeSpan.FromHours(9);
+            TimeSpan close = TimeSpan.FromHours(17);
+            TimeSpan duration = TimeSpan.FromMinutes(dto.Duration);
 
-            var merged = new List<(DateTime Start, DateTime End)>();
+            DateTime searchStart = dto.WindowStart;
+            DateTime searchEnd = dto.WindowEnd;
 
-            foreach (var interval in busy)
+            searchStart = AdjustToBusinessStart(searchStart, open, close);
+            searchEnd = AdjustToBusinessEnd(searchEnd, open, close);
+
+            if (searchStart >= searchEnd)
             {
-                if (merged.Count == 0 || interval.Start > merged[^1].End)
-                {
-                    merged.Add(interval);
-                }
-                else
-                {
-                    merged[^1] = (merged[^1].Start, interval.End > merged[^1].End ? interval.End : merged[^1].End);
-                }
+                return null;
             }
 
-            DateTime indicator = dto.WindowStart;
+            DateTime currentDay = searchStart.Date;
 
-            foreach (var (start, end) in merged)
+            while (currentDay <= searchEnd.Date)
             {
-                if (start - indicator >= TimeSpan.FromMinutes(dto.Duration))
+                DateTime dayStart = currentDay == searchStart.Date
+                    ? searchStart
+                    : currentDay.Add(open);
+                DateTime dayEnd = currentDay == searchEnd.Date
+                    ? searchEnd
+                    : currentDay.Add(close);
+
+                if (dayStart >= dayEnd)
                 {
-                    return (indicator, indicator.Add(TimeSpan.FromMinutes(dto.Duration)));
+                    currentDay = currentDay.AddDays(1);
+                    continue;
                 }
 
-                indicator = end;
+                var busy = meetingRepository.GetAll()
+                    .Where(m => m.ParticipantIds.Any(id => dto.ParticipantIds.Contains(id)))
+                    .Where(m => m.EndTime > dayStart && m.StartTime < dayEnd)
+                    .Select(m => (
+                        Start: m.StartTime < dayStart ? dayStart : m.StartTime,
+                        End: m.EndTime > dayEnd ? dayEnd : m.EndTime))
+                    .OrderBy(m => m.Start)
+                    .ToList();
+
+                var merged = MergeIntervals(busy);
+
+                DateTime indicator = dayStart;
+
+                foreach (var (start, end) in merged)
+                {
+                    if (start - indicator >= duration)
+                    {
+                        return (indicator, indicator.Add(duration));
+                    }
+
+                    indicator = end;
+                }
+
+                if (dayEnd - indicator >= duration)
+                {
+                    return (indicator, indicator.Add(duration));
+                }
+
+                currentDay = currentDay.AddDays(1);
             }
 
-            return dto.WindowEnd - indicator >= TimeSpan.FromMinutes(dto.Duration) ? (indicator, indicator.Add(TimeSpan.FromMinutes(dto.Duration))) : null;
+            return null;
         }
 
         public List<Meeting> GetMeetingsByUserId(int userId) => [.. meetingRepository.GetByUserId(userId)];
@@ -79,6 +104,55 @@ namespace MeetingScheduler.Application.Services
             };
 
             return meetingRepository.Add(meeting);
+        }
+
+        private static DateTime AdjustToBusinessStart(DateTime dt, TimeSpan open, TimeSpan close)
+        {
+            if (dt.TimeOfDay < open)
+            {
+                return dt.Date.Add(open);
+            }
+
+            if (dt.TimeOfDay >= close)
+            {
+                return dt.Date.AddDays(1).Add(open);
+            }
+
+            return dt;
+        }
+
+        private static DateTime AdjustToBusinessEnd(DateTime dt, TimeSpan open, TimeSpan close)
+        {
+            if (dt.TimeOfDay > close)
+            {
+                return dt.Date.Add(close);
+            }
+
+            if (dt.TimeOfDay < open)
+            {
+                return dt.Date.Add(open);
+            }
+
+            return dt;
+        }
+
+        private static List<(DateTime Start, DateTime End)> MergeIntervals(List<(DateTime Start, DateTime End)> intervals)
+        {
+            var merged = new List<(DateTime Start, DateTime End)>();
+
+            foreach (var interval in intervals)
+            {
+                if (merged.Count == 0 || interval.Start > merged[^1].End)
+                {
+                    merged.Add(interval);
+                }
+                else
+                {
+                    merged[^1] = (merged[^1].Start, interval.End > merged[^1].End ? interval.End : merged[^1].End);
+                }
+            }
+
+            return merged;
         }
     }
 }
